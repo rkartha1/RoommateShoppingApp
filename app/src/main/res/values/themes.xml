@@ -1,0 +1,86 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.RoommateShoppingApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.RoommateShoppingApp" parent="Base.Theme.RoommateShoppingApp" />
+
+    <!-- Custom styling of the AlertDialog. -->
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">@color/red</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textColorPrimary">@color/green</item>
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- Styling the OK (positive) and Cancel (negative) buttons of the AlertDialog -->
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NegativeButtonStyle</item>
+
+
+        <!-- Styling the size of the AlertDialog in terms of the screen size -->
+        <item name="windowMinWidthMajor">70%</item>
+        <item name="windowMinWidthMinor">70%</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="NeutralButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="LoginTheme" parent="FirebaseUI">
+
+        <!-- Background color of the login dialog -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <item name="colorControlNormal">@color/green</item>
+
+        <item name="android:textColorHint">@color/green</item>
+
+        <!-- Underline and Hint of the edittext -->
+        <item name="colorControlActivated">@color/green_dark</item>
+
+        <!-- Top bar color of the login dialog -->
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green_dark</item>
+
+        <!-- Typed in text color into the edittext -->
+        <item name="android:textColorPrimary">@color/green_dark</item>
+
+        <item name="android:textColor">@color/green_dark</item>
+
+        <item name="android:textColorLink">@color/green_dark</item>
+
+        <!-- Remove the action bar from the login dialog -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <!-- Custom styling of the Trouble signing in link -->
+    <style name="FirebaseUI.Text.Link">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/maroon</item>
+    </style>
+
+    <!-- Custom styling of the email TextInputLayout view in the Firebase sign-in screen -->
+    <style name="FirebaseUI.TextInputLayout.EmailField">
+        <item name="android:hint">@string/fui_email_hint</item>
+        <item name="android:textColorHint">@color/green</item>
+    </style>
+
+    <!-- Custom styling of the password TextInputLayout view in the Firebase sign-in screen -->
+    <style name="FirebaseUI.TextInputLayout.PasswordField">
+        <item name="android:hint">@string/fui_password_hint</item>
+        <item name="android:textColorHint">@color/green</item>
+    </style>
+</resources>
