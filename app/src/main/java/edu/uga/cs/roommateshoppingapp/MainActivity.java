@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Arrays;
 import java.util.List;
 
+// main activity
 public class MainActivity extends AppCompatActivity
         implements UserSignInDialogFragment.SignInDialogListener {
 
