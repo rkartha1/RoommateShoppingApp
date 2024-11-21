@@ -5,14 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MarkAsPurchasedActivity">
+    <Button
+        android:id="@+id/go_back_button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/shopping_list_view"
+        android:text="Go Back" />
 
-    <!-- ListView to display shopping items -->
     <ListView
         android:id="@+id/shopping_list_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:choiceMode="multipleChoice"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_back_button2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/total_price_edit_text"

@@ -11,6 +11,12 @@
         android:layout_height="wrap_content"
         android:text="Go Back" />
 
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Click on an individual item to updatate or delete it." />
+
     <ListView
         android:id="@+id/shopping_list_view"
         android:layout_width="match_parent"
