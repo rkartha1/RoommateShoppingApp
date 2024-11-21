@@ -28,10 +28,12 @@ public class RoommateManagementActivity extends AppCompatActivity {
 
         Button newLeadButton = findViewById(R.id.button1);
         Button reviewLeadsButton = findViewById(R.id.button2);
+        Button markAsPurchasedButton = findViewById(R.id.button3);  // Find button3
         signedInTextView = findViewById(R.id.textView3);
 
         newLeadButton.setOnClickListener(new NewLeadButtonClickListener());
         reviewLeadsButton.setOnClickListener(new ReviewLeadsButtonClickListener());
+        markAsPurchasedButton.setOnClickListener(new MarkAsPurchasedButtonClickListener()); // Set listener for button3
 
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -61,6 +63,14 @@ public class RoommateManagementActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
+
+    private class MarkAsPurchasedButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), MarkAsPurchasedActivity.class);  // Start MarkAsPurchasedActivity
             view.getContext().startActivity(intent);
         }
     }
