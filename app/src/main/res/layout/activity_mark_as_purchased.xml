@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MarkAsPurchasedActivity">
+
+    <!-- ListView to display shopping items -->
+    <ListView
+        android:id="@+id/shopping_list_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:choiceMode="multipleChoice"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/total_price_edit_text"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <!-- EditText to input total price -->
+    <EditText
+        android:id="@+id/total_price_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Enter total price"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@+id/shopping_list_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Button to mark selected items as purchased -->
+    <Button
+        android:id="@+id/mark_purchased_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Mark as Purchased"
+        app:layout_constraintTop_toBottomOf="@+id/total_price_edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
