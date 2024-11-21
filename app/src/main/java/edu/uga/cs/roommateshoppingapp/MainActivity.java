@@ -31,8 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // main activity
-public class MainActivity extends AppCompatActivity
-        implements UserSignInDialogFragment.SignInDialogListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final String DEBUG_TAG = "MainActivity";
 
@@ -55,6 +54,8 @@ public class MainActivity extends AppCompatActivity
         registerButton.setOnClickListener( new RegisterButtonClickListener() );
     }
 
+
+    /*
 
     @Override
     public void signIn( String email, String password )
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
+     */
 
     /*
     private class SignInButtonClickListener implements View.OnClickListener {
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity
      */
 
 
+    /*
     //A button listener class to start a Firebase sign-in process
     private class SignInButtonClickListener implements View.OnClickListener {
         @Override
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.LENGTH_SHORT).show();
         }
     }
+     */
 
 
 
@@ -167,6 +171,16 @@ public class MainActivity extends AppCompatActivity
         public void onClick(View view) {
             // start the user registration activity
             Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
+
+
+    private class SignInButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            // start the user sign in activity
+            Intent intent = new Intent(view.getContext(), SignInActivity.class);
             view.getContext().startActivity(intent);
         }
     }

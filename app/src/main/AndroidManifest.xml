@@ -47,6 +47,15 @@
                 android:value="edu.uga.cs.roommateshoppingapp.MainActivity" />
         </activity>
         <activity
+            android:name=".SignInActivity"
+            android:parentActivityName=".MainActivity">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.uga.cs.roommateshoppingapp.MainActivity" />
+        </activity>
+        <activity
             android:name=".RoommateManagementActivity"
             android:parentActivityName=".MainActivity">
 
