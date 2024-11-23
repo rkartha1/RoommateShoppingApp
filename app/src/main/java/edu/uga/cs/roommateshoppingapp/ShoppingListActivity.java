@@ -39,6 +39,11 @@ public class ShoppingListActivity extends AppCompatActivity {
             Intent intent = new Intent(ShoppingListActivity.this, RoommateManagementActivity.class);
             startActivity(intent);
         });
+        Button logOutButton = findViewById(R.id.log_out_button1);
+        logOutButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ShoppingListActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
 
         DatabaseReference shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");
 
