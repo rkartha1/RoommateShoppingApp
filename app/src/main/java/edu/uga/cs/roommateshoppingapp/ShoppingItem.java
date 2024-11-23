@@ -1,26 +1,3 @@
-//package edu.uga.cs.roommateshoppingapp;
-//
-//public class ShoppingItem {
-//    private String itemName;
-//    private String itemQuantity;
-//
-//    public ShoppingItem() {
-//        // Default constructor required for calls to DataSnapshot.getValue(ShoppingItem.class)
-//    }
-//
-//    public ShoppingItem(String itemName, String itemQuantity) {
-//        this.itemName = itemName;
-//        this.itemQuantity = itemQuantity;
-//    }
-//
-//    public String getItemName() {
-//        return itemName;
-//    }
-//
-//    public String getItemQuantity() {
-//        return itemQuantity;
-//    }
-//}
 package edu.uga.cs.roommateshoppingapp;
 
 public class ShoppingItem {
@@ -47,6 +24,12 @@ public class ShoppingItem {
         this.itemQuantity = itemQuantity;
         this.price = price;
         this.purchasedBy = purchasedBy;
+    }
+
+    public ShoppingItem(String itemId, String itemName, String itemQuantity) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.itemQuantity = itemQuantity;
     }
 
     // Getters and setters

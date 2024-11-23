@@ -2,13 +2,18 @@ package edu.uga.cs.roommateshoppingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,15 +23,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MarkAsPurchasedActivity extends AppCompatActivity {
 
     private ListView shoppingListView;
-    private ArrayAdapter<String> adapter;
     private ArrayList<ShoppingItem> shoppingList;
     private ArrayList<ShoppingItem> selectedItems;
     private EditText totalPriceEditText;
     private Button markPurchasedButton;
+    private CustomAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,12 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         shoppingListView = findViewById(R.id.shopping_list_view);
         totalPriceEditText = findViewById(R.id.total_price_edit_text);
         markPurchasedButton = findViewById(R.id.mark_purchased_button);
+
+        Button goBackButton2 = findViewById(R.id.go_back_button2);
+        goBackButton2.setOnClickListener(v -> {
+            Intent intent = new Intent(MarkAsPurchasedActivity.this, RoommateManagementActivity.class);
+            startActivity(intent);
+        });
 
         shoppingList = new ArrayList<>();
         selectedItems = new ArrayList<>();
@@ -62,6 +74,7 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
                 for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
                     ShoppingItem item = itemSnapshot.getValue(ShoppingItem.class);
                     if (item != null) {
+                        item.setItemId(itemSnapshot.getKey());  // Set the item ID
                         shoppingList.add(item);
                     }
                 }
@@ -77,25 +90,57 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
     }
 
     private void setupListView() {
-        // Use a custom adapter to display shopping items with checkboxes
-        ArrayList<String> itemNames = new ArrayList<>();
-        for (ShoppingItem item : shoppingList) {
-            itemNames.add(item.getItemName() + " - " + item.getItemQuantity());
+        adapter = new CustomAdapter(shoppingList);
+        shoppingListView.setAdapter(adapter);
+    }
+
+    private class CustomAdapter extends BaseAdapter {
+        private List<ShoppingItem> items;
+
+        public CustomAdapter(List<ShoppingItem> items) {
+            this.items = items;
         }
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, itemNames);
-        shoppingListView.setAdapter(adapter);
-        shoppingListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        @Override
+        public int getCount() {
+            return items.size();
+        }
 
-        // Set item click listener to track selected items
-        shoppingListView.setOnItemClickListener((parent, view, position, id) -> {
-            CheckBox checkBox = (CheckBox) view.findViewById(android.R.id.text1);
-            if (checkBox.isChecked()) {
-                selectedItems.add(shoppingList.get(position));
-            } else {
-                selectedItems.remove(shoppingList.get(position));
+        @Override
+        public Object getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.shopping_list_item, parent, false);
             }
-        });
+
+            ShoppingItem item = items.get(position);
+            CheckBox checkBox = convertView.findViewById(R.id.item_checkbox);
+            TextView itemName = convertView.findViewById(R.id.item_name);
+
+            itemName.setText(item.getItemName() + " - " + item.getItemQuantity());
+
+            checkBox.setOnCheckedChangeListener(null);
+            checkBox.setChecked(selectedItems.contains(item));
+
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    selectedItems.add(item);
+                } else {
+                    selectedItems.remove(item);
+                }
+            });
+
+            return convertView;
+        }
     }
 
     private void markItemsAsPurchased() {
@@ -126,13 +171,14 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         // Remove the selected items from the shopping list in Firebase
         DatabaseReference shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");
         for (ShoppingItem item : selectedItems) {
-            shoppingListRef.child(item.getItemId()).removeValue();        }
+            shoppingListRef.child(item.getItemId()).removeValue();
+        }
 
         // Provide feedback and clear the selection
         Toast.makeText(this, "Items marked as purchased", Toast.LENGTH_SHORT).show();
         selectedItems.clear();
         totalPriceEditText.setText("");
         shoppingListView.clearChoices();
-        adapter.notifyDataSetChanged();
+        fetchShoppingListFromFirebase(); // Reload the shopping list
     }
 }
