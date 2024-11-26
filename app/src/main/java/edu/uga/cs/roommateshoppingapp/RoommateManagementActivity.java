@@ -31,12 +31,18 @@ public class RoommateManagementActivity extends AppCompatActivity {
         Button markAsPurchasedButton = findViewById(R.id.button3);  // Find button3
         signedInTextView = findViewById(R.id.textView3);
         Button logOutButton = findViewById(R.id.button7);
+        Button checkout = findViewById(R.id.button5);
 
         newLeadButton.setOnClickListener(new NewLeadButtonClickListener());
         reviewLeadsButton.setOnClickListener(new ReviewLeadsButtonClickListener());
         markAsPurchasedButton.setOnClickListener(new MarkAsPurchasedButtonClickListener()); // Set listener for button3
         logOutButton.setOnClickListener(v -> {
             Intent intent = new Intent(RoommateManagementActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        checkout.setOnClickListener(v -> {
+            Intent intent = new Intent(RoommateManagementActivity.this, ViewBasketActivity.class);
             startActivity(intent);
         });
 

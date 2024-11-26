@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +29,6 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
     private ListView shoppingListView;
     private ArrayList<ShoppingItem> shoppingList;
     private ArrayList<ShoppingItem> selectedItems;
-    private EditText totalPriceEditText;
     private Button markPurchasedButton;
     private CustomAdapter adapter;
 
@@ -40,7 +38,6 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mark_as_purchased);
 
         shoppingListView = findViewById(R.id.shopping_list_view);
-        totalPriceEditText = findViewById(R.id.total_price_edit_text);
         markPurchasedButton = findViewById(R.id.mark_purchased_button);
 
         Button goBackButton2 = findViewById(R.id.go_back_button2);
@@ -55,12 +52,7 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         // Fetch the shopping list from Firebase (this assumes the shopping list is already populated)
         fetchShoppingListFromFirebase();
 
-        markPurchasedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                markItemsAsPurchased();
-            }
-        });
+        markPurchasedButton.setOnClickListener(view -> markItemsAsPurchased());
     }
 
     private void fetchShoppingListFromFirebase() {
@@ -144,14 +136,10 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
     }
 
     private void markItemsAsPurchased() {
-        String totalPriceText = totalPriceEditText.getText().toString().trim();
-
-        if (selectedItems.isEmpty() || totalPriceText.isEmpty()) {
-            Toast.makeText(this, "Please select items and enter a total price", Toast.LENGTH_SHORT).show();
+        if (selectedItems.isEmpty()) {
+            Toast.makeText(this, "Please select items", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        double totalPrice = Double.parseDouble(totalPriceText);
 
         // Get the current user (roommate) who made the purchase
         String currentUserId = "Roommate1";  // You can get this from Firebase Authentication or pass it through the intent
@@ -161,8 +149,8 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
 
         // Add selected items to the "recently purchased" list
         for (ShoppingItem item : selectedItems) {
-            item.setPrice(totalPrice / selectedItems.size());  // Distribute the total price among selected items
-            item.setPurchasedBy(currentUserId);  // Record which roommate made the purchase
+            // Set the user who purchased the item
+            item.setPurchasedBy(currentUserId);
 
             // Move the item to the "recently purchased" list in Firebase
             recentlyPurchasedRef.push().setValue(item);
@@ -177,7 +165,6 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         // Provide feedback and clear the selection
         Toast.makeText(this, "Items marked as purchased", Toast.LENGTH_SHORT).show();
         selectedItems.clear();
-        totalPriceEditText.setText("");
         shoppingListView.clearChoices();
         fetchShoppingListFromFirebase(); // Reload the shopping list
     }
