@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/go_back_button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go Back" />
+
+        <Button
+            android:id="@+id/log_out_button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Click on an individual item to updatate or delete it." />
+
+    <ListView
+        android:id="@+id/purchased_item_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
+
+</LinearLayout>

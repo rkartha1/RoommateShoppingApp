@@ -42,29 +42,29 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingListView.setOnItemClickListener((parent, view, position, id) -> {
             String itemString = shoppingList.get(position);
             String[] parts = itemString.split(" - ");
-            if (parts.length == 2) {
-                String itemName = parts[0];
-                String itemQuantity = parts[1];
+                    if (parts.length == 2) {
+                        String itemName = parts[0];
+                        String itemQuantity = parts[1];
 
-                // Find the item ID from the Firebase database
-                shoppingListRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            ShoppingItem item = snapshot.getValue(ShoppingItem.class);
-                            if (item != null) {
-                                item.setItemId(snapshot.getKey());  // Set the item ID
-                                showEditDeleteDialog(item);
+                        // Find the item ID from the Firebase database
+                        shoppingListRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    ShoppingItem item = snapshot.getValue(ShoppingItem.class);
+                                    if (item != null) {
+                                        item.setItemId(snapshot.getKey());  // Set the item ID
+                                        showEditDeleteDialog(item);
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(DEBUG_TAG, "Error finding item: " + databaseError.getMessage());
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.d(DEBUG_TAG, "Error finding item: " + databaseError.getMessage());
+                            }
+                        });
                     }
-                });
-            }
         });
 
 
