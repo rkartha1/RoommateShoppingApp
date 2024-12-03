@@ -117,21 +117,21 @@ public class PurchasedItemListActivity extends AppCompatActivity {
                     PurchasedItemGroup group = groupSnapshot.getValue(PurchasedItemGroup.class);
 
 
-                        if (group != null && group.getPurchasedItems() != null) {
-                            String roommateEmail = group.getRoommateEmail();
-                            double totalPrice = group.getTotalPrice();
+                    if (group != null && group.getPurchasedItems() != null) {
+                        String roommateEmail = group.getRoommateEmail();
+                        double totalPrice = group.getTotalPrice();
 
-                            // Log the group to see if it's correctly retrieved
-                            Log.d(DEBUG_TAG, "Group: " + roommateEmail + " - Total Price: " + totalPrice);
-                            String itemDisplay = roommateEmail + " - " + currentDate + " - ";
-                            // Iterate over the purchased items for each group
-                            for (PurchasedItem item : group.getPurchasedItems()) {
-                                // Create a formatted string: roommateEmail - itemName - totalPrice
-                                itemDisplay += item.getItemName() + " - ";
-                            }
-                            itemDisplay += totalPrice;
-                            purchasedItemList.add(itemDisplay);
+                        // Log the group to see if it's correctly retrieved
+                        Log.d(DEBUG_TAG, "Group: " + roommateEmail + " - Total Price: " + totalPrice);
+                        String itemDisplay = roommateEmail + " - " + currentDate + " - ";
+                        // Iterate over the purchased items for each group
+                        for (PurchasedItem item : group.getPurchasedItems()) {
+                            // Create a formatted string: roommateEmail - itemName - totalPrice
+                            itemDisplay += item.getItemName() + " - ";
                         }
+                        itemDisplay += totalPrice;
+                        purchasedItemList.add(itemDisplay);
+                    }
 
                 }
 
