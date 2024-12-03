@@ -13,13 +13,10 @@
             android:id="@+id/go_back_button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30px"
             android:text="Go Back" />
 
-        <Button
-            android:id="@+id/log_out_button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log Out" />
+
     </LinearLayout>
 
     <TextView

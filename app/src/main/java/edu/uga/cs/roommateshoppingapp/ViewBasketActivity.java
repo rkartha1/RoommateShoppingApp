@@ -249,12 +249,6 @@ public class ViewBasketActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Log Out Button
-        Button logOutButton = findViewById(R.id.log_out_button1);
-        logOutButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewBasketActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void showDeleteDialog(ShoppingItem item) {

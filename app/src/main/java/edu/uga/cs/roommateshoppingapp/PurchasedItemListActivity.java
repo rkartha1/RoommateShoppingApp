@@ -91,11 +91,6 @@ public class PurchasedItemListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button logOutButton = findViewById(R.id.log_out_button2);
-        logOutButton.setOnClickListener(v -> {
-            Intent intent = new Intent(PurchasedItemListActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
 
         purchasedItemListRef = FirebaseDatabase.getInstance().getReference("purchasedItems");
         shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");

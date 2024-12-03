@@ -21,7 +21,6 @@ public class NewItemActivity extends AppCompatActivity {
     private EditText itemNameEditText;
     private EditText itemQuantityEditText;
     private Button addItemButton;
-    private Button logOutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +30,12 @@ public class NewItemActivity extends AppCompatActivity {
         itemNameEditText = findViewById(R.id.editTextItemName);
         itemQuantityEditText = findViewById(R.id.editTextItemQuantity);
         addItemButton = findViewById(R.id.buttonAddItem);
-        logOutButton = findViewById(R.id.log_out_button2);
 
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addItemToFirebase();
             }
-        });
-
-        logOutButton.setOnClickListener(v -> {
-            Intent intent = new Intent(NewItemActivity.this, MainActivity.class);
-            startActivity(intent);
         });
     }
 
