@@ -9,6 +9,7 @@ public class PurchasedItemGroup {
     private String roommateEmail;
     private double totalPrice;
 
+
     public PurchasedItemGroup() {
 
     }
@@ -18,6 +19,7 @@ public class PurchasedItemGroup {
         this.purchasedItems = purchasedItems;
         this.roommateEmail = roommateEmail;
         this.totalPrice = totalPrice;
+
     }
 
     public String getGroupID() {
@@ -51,4 +53,6 @@ public class PurchasedItemGroup {
     public double getTotalPrice() {
         return totalPrice;
     }
+
+
 }

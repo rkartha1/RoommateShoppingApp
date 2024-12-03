@@ -70,4 +70,9 @@ public class PurchasedItem {
     public void setPurchasedBy(String purchasedBy) {
         this.purchasedBy = purchasedBy;
     }
+
+    @Override
+    public String toString() {
+        return itemName;
+    }
 }

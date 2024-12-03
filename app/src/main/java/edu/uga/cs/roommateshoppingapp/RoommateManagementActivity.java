@@ -33,6 +33,7 @@ public class RoommateManagementActivity extends AppCompatActivity {
         Button logOutButton = findViewById(R.id.button7);
         Button checkout = findViewById(R.id.button5);
         Button viewPurchases = findViewById(R.id.button6);
+        Button settleCosts = findViewById(R.id.button8);
 
         newLeadButton.setOnClickListener(new NewLeadButtonClickListener());
         reviewLeadsButton.setOnClickListener(new ReviewLeadsButtonClickListener());
@@ -44,6 +45,11 @@ public class RoommateManagementActivity extends AppCompatActivity {
 
         checkout.setOnClickListener(v -> {
             Intent intent = new Intent(RoommateManagementActivity.this, ViewBasketActivity.class);
+            startActivity(intent);
+        });
+
+        settleCosts.setOnClickListener(v -> {
+            Intent intent = new Intent(RoommateManagementActivity.this, SettleCostActivity.class);
             startActivity(intent);
         });
 

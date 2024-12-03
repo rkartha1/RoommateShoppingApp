@@ -20,7 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+
 
 public class PurchasedItemListActivity extends AppCompatActivity {
 
@@ -108,27 +112,38 @@ public class PurchasedItemListActivity extends AppCompatActivity {
 
                 // Iterate over each group in purchasedItems (like "group1")
                 for (DataSnapshot groupSnapshot : dataSnapshot.getChildren()) {
-                    PurchasedItemGroup group = groupSnapshot.getValue(PurchasedItemGroup.class);
-                    if (group != null && group.getPurchasedItems() != null) {
-                        String roommateEmail = group.getRoommateEmail();
-                        double totalPrice = group.getTotalPrice();
+                    Calendar calendar = Calendar.getInstance();
 
-                        // Log the group to see if it's correctly retrieved
-                        Log.d(DEBUG_TAG, "Group: " + roommateEmail + " - Total Price: " + totalPrice);
-                        String itemDisplay = roommateEmail + " - ";
-                        // Iterate over the purchased items for each group
-                        for (PurchasedItem item : group.getPurchasedItems()) {
-                            // Create a formatted string: roommateEmail - itemName - totalPrice
-                            itemDisplay += item.getItemName() + " - ";
+                    // Create a SimpleDateFormat to format the date as "yyyy-MM-dd"
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                    // Format the current date and store it as a string
+                    String currentDate = sdf.format(calendar.getTime());
+                    PurchasedItemGroup group = groupSnapshot.getValue(PurchasedItemGroup.class);
+
+
+                        if (group != null && group.getPurchasedItems() != null) {
+                            String roommateEmail = group.getRoommateEmail();
+                            double totalPrice = group.getTotalPrice();
+
+                            // Log the group to see if it's correctly retrieved
+                            Log.d(DEBUG_TAG, "Group: " + roommateEmail + " - Total Price: " + totalPrice);
+                            String itemDisplay = roommateEmail + " - " + currentDate + " - ";
+                            // Iterate over the purchased items for each group
+                            for (PurchasedItem item : group.getPurchasedItems()) {
+                                // Create a formatted string: roommateEmail - itemName - totalPrice
+                                itemDisplay += item.getItemName() + " - ";
+                            }
+                            itemDisplay += totalPrice;
+                            purchasedItemList.add(itemDisplay);
                         }
-                        itemDisplay += totalPrice;
-                        purchasedItemList.add(itemDisplay);
-                    }
+
                 }
 
                 // Notify the adapter to update the ListView
                 adapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -153,41 +168,61 @@ public class PurchasedItemListActivity extends AppCompatActivity {
         builder.setView(dialogView);
 
         EditText totalPriceEditText = dialogView.findViewById(R.id.edit_total_price);
+        ListView itemList = dialogView.findViewById(R.id.purchased_items_list);
 
-
+        // Set the current total price in the EditText
         totalPriceEditText.setText(String.valueOf(items.getTotalPrice()));
 
+        // Populate ListView with purchased items
+        ArrayAdapter<PurchasedItem> itemAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items.getPurchasedItems());
+        itemList.setAdapter(itemAdapter);
 
+        // Handle item deletion
+        itemList.setOnItemClickListener((parent, view, position, id) -> {
+            PurchasedItem selectedItem = items.getPurchasedItems().get(position);
+
+            // Confirm deletion of the item
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Item")
+                    .setMessage("Are you sure you want to delete " + selectedItem.getItemName() + "?")
+                    .setPositiveButton("Delete", (dialog, which) -> {
+                        // Remove the item from the group's purchasedItems list
+                        items.getPurchasedItems().remove(selectedItem);
+
+                        // Update Firebase for the modified group
+                        purchasedItemListRef.child(items.getGroupID()).setValue(items)
+                                .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item removed successfully"))
+                                .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error removing item: " + e.getMessage()));
+
+                        // Add the deleted item back to the shopping list
+                        addNewItem(selectedItem.getItemName(), selectedItem.getItemQuantity());
+
+                        // Refresh the ListView
+                        itemAdapter.notifyDataSetChanged();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+
+        // Handle price update
         builder.setPositiveButton("Update", (dialog, which) -> {
             String updatedTotalPrice = totalPriceEditText.getText().toString().trim();
 
             if (!updatedTotalPrice.isEmpty()) {
                 items.setTotalPrice(Double.parseDouble(updatedTotalPrice));
 
+                // Update Firebase with the new total price
                 if (items.getGroupID() != null) {
                     purchasedItemListRef.child(items.getGroupID()).setValue(items)
-                            .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item updated successfully"))
-                            .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error updating item: " + e.getMessage()));
+                            .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Total price updated successfully"))
+                            .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error updating total price: " + e.getMessage()));
                 } else {
-                    Log.d(DEBUG_TAG, "Error: itemId is null");
+                    Log.d(DEBUG_TAG, "Error: groupID is null");
                 }
             }
         });
 
-        builder.setNegativeButton("Delete", (dialog, which) -> {
-            if (items.getGroupID() != null) {
-                for (PurchasedItem item : items.getPurchasedItems()) {
-                    addNewItem(item.getItemName(), item.getItemQuantity());
-                }
-                purchasedItemListRef.child(items.getGroupID()).removeValue()
-                        .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item deleted successfully"))
-                        .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error deleting item: " + e.getMessage()));
-            } else {
-                Log.d(DEBUG_TAG, "Error: itemId is null");
-            }
-        });
-
-        builder.setNeutralButton("Cancel", null);
+        builder.setNegativeButton("Cancel", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();

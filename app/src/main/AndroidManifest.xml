@@ -15,6 +15,10 @@
         android:theme="@style/Theme.RoommateShoppingApp"
         tools:targetApi="31">
         <activity
+            android:name=".SettleCostActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
             android:name=".ViewBasketActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
