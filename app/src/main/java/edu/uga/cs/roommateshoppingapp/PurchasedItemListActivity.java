@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -155,72 +156,104 @@ public class PurchasedItemListActivity extends AppCompatActivity {
     }
 
     private void showEditDeleteDialog(PurchasedItemGroup items) {
+        if (items.getPurchasedItems() == null) {
+            Log.d(DEBUG_TAG, "Purchased items list is null. Initializing to an empty list.");
+            items.setPurchasedItems(new ArrayList<>());
+        }
+
+        // Create the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit or Delete Item");
 
+        // Inflate the custom dialog layout
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_edit_delete_purchase, null);
         builder.setView(dialogView);
 
+        // Get references to the dialog components
         EditText totalPriceEditText = dialogView.findViewById(R.id.edit_total_price);
         ListView itemList = dialogView.findViewById(R.id.purchased_items_list);
 
-        // Set the current total price in the EditText
+        // Set the total price value
         totalPriceEditText.setText(String.valueOf(items.getTotalPrice()));
 
-        // Populate ListView with purchased items
-        ArrayAdapter<PurchasedItem> itemAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items.getPurchasedItems());
+        // Set up the ListView with an ArrayAdapter
+        ArrayAdapter<PurchasedItem> itemAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                items.getPurchasedItems()
+        );
         itemList.setAdapter(itemAdapter);
 
-        // Handle item deletion
+        // Handle ListView item click for deletion
         itemList.setOnItemClickListener((parent, view, position, id) -> {
             PurchasedItem selectedItem = items.getPurchasedItems().get(position);
 
-            // Confirm deletion of the item
+            // Ask for confirmation before deleting the item
             new AlertDialog.Builder(this)
                     .setTitle("Delete Item")
                     .setMessage("Are you sure you want to delete " + selectedItem.getItemName() + "?")
-                    .setPositiveButton("Delete", (dialog, which) -> {
-                        // Remove the item from the group's purchasedItems list
-                        items.getPurchasedItems().remove(selectedItem);
-
-                        // Update Firebase for the modified group
-                        purchasedItemListRef.child(items.getGroupID()).setValue(items)
-                                .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item removed successfully"))
-                                .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error removing item: " + e.getMessage()));
-
-                        // Add the deleted item back to the shopping list
+                    .setPositiveButton("Yes", (dialog1, which) -> {
                         addNewItem(selectedItem.getItemName(), selectedItem.getItemQuantity());
-
-                        // Refresh the ListView
+                        items.getPurchasedItems().remove(position);
                         itemAdapter.notifyDataSetChanged();
+
+                        // Update Firebase
+                        if (items.getGroupID() != null) {
+                            DatabaseReference itemGroupRef = purchasedItemListRef.child(items.getGroupID());
+                            itemGroupRef.setValue(items)
+                                    .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item deleted successfully"))
+                                    .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to delete item", e));
+                        }
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton("No", null)
                     .show();
         });
 
-        // Handle price update
-        builder.setPositiveButton("Update", (dialog, which) -> {
-            String updatedTotalPrice = totalPriceEditText.getText().toString().trim();
+        // Handle dialog buttons
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            try {
+                double totalPrice = Double.parseDouble(totalPriceEditText.getText().toString());
+                items.setTotalPrice(totalPrice);
 
-            if (!updatedTotalPrice.isEmpty()) {
-                items.setTotalPrice(Double.parseDouble(updatedTotalPrice));
-
-                // Update Firebase with the new total price
+                // Update Firebase
                 if (items.getGroupID() != null) {
-                    purchasedItemListRef.child(items.getGroupID()).setValue(items)
-                            .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Total price updated successfully"))
-                            .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error updating total price: " + e.getMessage()));
-                } else {
-                    Log.d(DEBUG_TAG, "Error: groupID is null");
+                    DatabaseReference itemGroupRef = purchasedItemListRef.child(items.getGroupID());
+                    itemGroupRef.setValue(items)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(DEBUG_TAG, "Total price updated successfully");
+                                Toast.makeText(this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(DEBUG_TAG, "Failed to update total price", e);
+                                Toast.makeText(this, "Failed to save changes", Toast.LENGTH_SHORT).show();
+                            });
                 }
+            } catch (NumberFormatException e) {
+                Log.e(DEBUG_TAG, "Invalid number format: " + totalPriceEditText.getText().toString(), e);
+                Toast.makeText(this, "Invalid price entered", Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("Cancel", null);
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        builder.setNeutralButton("Delete Group", (dialog, which) -> {
+            if (items.getGroupID() != null) {
+                purchasedItemListRef.child(items.getGroupID()).removeValue()
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d(DEBUG_TAG, "Group deleted successfully");
+                            Toast.makeText(this, "Group deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(DEBUG_TAG, "Failed to delete group", e);
+                            Toast.makeText(this, "Failed to delete group", Toast.LENGTH_SHORT).show();
+                        });
+            }
+        });
+
+        builder.create().show();
     }
+
+
 }
 
