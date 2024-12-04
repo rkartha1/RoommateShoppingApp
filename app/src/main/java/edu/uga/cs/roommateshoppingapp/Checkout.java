@@ -8,8 +8,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Activity that handles the checkout process in the Roommate Shopping App.
+ */
 public class Checkout extends AppCompatActivity {
 
+    /**
+     * Called when the activity is first created. This method sets up the layout and applies padding.
+     *
+     * @param savedInstanceState that contains the saved bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

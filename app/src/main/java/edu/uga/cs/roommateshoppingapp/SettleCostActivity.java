@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Activity that manages the cost settlement among roommates.
+ */
 public class SettleCostActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
@@ -30,6 +33,11 @@ public class SettleCostActivity extends AppCompatActivity {
     private Button logOut;
     private Button goBack;
 
+    /**
+     * Called when the activity is created.
+     *
+     * @param savedInstanceState the state of the activity if it was previously paused.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +67,9 @@ public class SettleCostActivity extends AppCompatActivity {
         fetchAndCalculateCosts();
     }
 
+    /**
+     * Fetches the purchase data from Firebase and calculates the costs.
+     */
     private void fetchAndCalculateCosts() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,6 +94,11 @@ public class SettleCostActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Calculates the total and average spending of roommates and displays the results.
+     *
+     * @param purchasedItemGroups a list of all purchased item groups.
+     */
     private void calculateAndDisplayResults(List<PurchasedItemGroup> purchasedItemGroups) {
         Map<String, Double> roommateSpending = new HashMap<>();
         double totalSpent = 0;
@@ -94,9 +110,7 @@ public class SettleCostActivity extends AppCompatActivity {
                     roommateSpending.getOrDefault(group.getRoommateEmail(), 0.0) + group.getTotalPrice());
         }
 
-
         double averageSpent = totalSpent / roommateSpending.size();
-
 
         StringBuilder detailsBuilder = new StringBuilder();
         for (Map.Entry<String, Double> entry : roommateSpending.entrySet()) {
@@ -107,15 +121,16 @@ public class SettleCostActivity extends AppCompatActivity {
                     .append("\n\n");
         }
 
-
         totalSpentTextView.setText("Total Spent: $" + totalSpent);
         averageSpentTextView.setText("Average Spent: $" + averageSpent);
         roommateDetailsTextView.setText(detailsBuilder.toString());
 
-
         clearAllPurchases();
     }
 
+    /**
+     * Clears all purchase data from Firebase.
+     */
     private void clearAllPurchases() {
         databaseReference.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -126,3 +141,4 @@ public class SettleCostActivity extends AppCompatActivity {
         });
     }
 }
+

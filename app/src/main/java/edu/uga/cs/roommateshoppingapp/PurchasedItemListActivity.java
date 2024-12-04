@@ -26,7 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
+/**
+ * Activity that displays a list of purchased items for roommates.
+ */
 public class PurchasedItemListActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "PurchasedItemListActivity";
@@ -36,6 +38,11 @@ public class PurchasedItemListActivity extends AppCompatActivity {
     private DatabaseReference purchasedItemListRef;
     private DatabaseReference shoppingListRef;
 
+    /**
+     * Initializes the activity, sets up UI components, and retrieves data from Firebase.
+     *
+     * @param savedInstanceState a Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +155,12 @@ public class PurchasedItemListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Adds a new item to the shopping list.
+     *
+     * @param name     the name of the item.
+     * @param quantity the quantity of the item.
+     */
     public void addNewItem(String name, String quantity) {
         DatabaseReference newItemRef = shoppingListRef.push();
         String itemId = newItemRef.getKey();
@@ -155,6 +168,12 @@ public class PurchasedItemListActivity extends AppCompatActivity {
         newItemRef.setValue(newItem);
     }
 
+
+    /**
+     * Displays a dialog for editing or deleting a purchased item group.
+     *
+     * @param items the purchased item group to edit or delete.
+     */
     private void showEditDeleteDialog(PurchasedItemGroup items) {
         if (items.getPurchasedItems() == null) {
             Log.d(DEBUG_TAG, "Purchased items list is null. Initializing to an empty list.");

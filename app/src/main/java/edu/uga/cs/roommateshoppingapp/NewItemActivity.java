@@ -1,19 +1,19 @@
 package edu.uga.cs.roommateshoppingapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * The NewItemActivity class allows users to add new items to the shopping list.
+ *
+ */
 public class NewItemActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "NewItemActivity";
@@ -22,6 +22,11 @@ public class NewItemActivity extends AppCompatActivity {
     private EditText itemQuantityEditText;
     private Button addItemButton;
 
+    /**
+     * Called when the activity is created.
+     *
+     * @param savedInstanceState A bundle containing data for the activity's state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,19 +44,25 @@ public class NewItemActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Adds a new shopping item to the Firebase database.
+     */
     private void addItemToFirebase() {
         String itemName = itemNameEditText.getText().toString().trim();
         String itemQuantity = itemQuantityEditText.getText().toString().trim();
 
+        // Validate input
         if (itemName.isEmpty() || itemQuantity.isEmpty()) {
             Toast.makeText(this, "Please enter both item name and quantity", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Reference to Firebase database
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("shoppingList");
         String itemId = databaseReference.push().getKey();
         ShoppingItem shoppingItem = new ShoppingItem(itemName, itemQuantity);
 
+        // Add item to Firebase
         if (itemId != null) {
             databaseReference.child(itemId).setValue(shoppingItem)
                     .addOnCompleteListener(task -> {
@@ -66,3 +77,4 @@ public class NewItemActivity extends AppCompatActivity {
         }
     }
 }
+

@@ -17,7 +17,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
+/**
+ * Activity for registering a new user in the app using Firebase Authentication.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "RegisterActivity";
@@ -25,6 +27,11 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passworEditText;
 
+    /**
+     * Initializes the RegisterActivity by setting up the UI elements and click listener for the register button.
+     *
+     * @param savedInstanceState The saved instance state, if any, to restore the previous state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +44,15 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener( new RegisterButtonClickListener() );
     }
 
+    /**
+     * Listener for the register button click. Handles the process of creating a new user using Firebase Authentication.
+     */
     private class RegisterButtonClickListener implements View.OnClickListener {
+        /**
+         * Called when the register button is clicked. Creates a new user using Firebase authentication.
+         *
+         * @param view The view that was clicked.
+         */
         @Override
         public void onClick(View view) {
             final String email = emailEditText.getText().toString();
@@ -45,14 +60,16 @@ public class RegisterActivity extends AppCompatActivity {
 
             final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            // This is how we can create a new user using an email/password combination.
-            // Note that we also add an onComplete listener, which will be invoked once
-            // a new user has been created by Firebase.  This is how we will know the
-            // new user creation succeeded or failed.
-            // If a new user has been created, Firebase already signs in the new user;
-            // no separate sign in is needed.
+            // Create a new user using the email and password provided
             firebaseAuth.createUserWithEmailAndPassword( email, password )
                     .addOnCompleteListener( RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                        /**
+                         * Called when the registration task is complete. If the task is successful,
+                         * the user is redirected to the Roommate Management Activity. If it fails,
+                         * an error message is shown.
+                         *
+                         * @param task The task of the registration process.
+                         */
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
@@ -61,16 +78,17 @@ public class RegisterActivity extends AppCompatActivity {
                                         "Registered user: " + email,
                                         Toast.LENGTH_SHORT ).show();
 
-                                // Sign in success, update UI with the signed-in user's information
+                                // Registration success, log the event
                                 Log.d( DEBUG_TAG, "createUserWithEmail: success" );
 
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
+                                // Redirect to the Roommate Management Activity
                                 Intent intent = new Intent( RegisterActivity.this, RoommateManagementActivity.class );
                                 startActivity( intent );
 
                             } else {
-                                // If sign in fails, display a message to the user.
+                                // Registration failed, show an error message
                                 Log.w(DEBUG_TAG, "createUserWithEmail: failure", task.getException());
                                 Toast.makeText(RegisterActivity.this, "Registration failed.",
                                         Toast.LENGTH_SHORT).show();
@@ -80,3 +98,4 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 }
+

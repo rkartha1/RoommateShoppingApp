@@ -3,7 +3,6 @@ package edu.uga.cs.roommateshoppingapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
+/**
+ * Activity for managing and displaying a shopping list in a roommate's shopping app.
+ */
 public class ShoppingListActivity extends AppCompatActivity {
     private static final String DEBUG_TAG = "ShoppingListActivity";
     private ListView shoppingListView;
@@ -29,6 +29,11 @@ public class ShoppingListActivity extends AppCompatActivity {
     private ArrayList<String> shoppingList;
     private DatabaseReference shoppingListRef;
 
+    /**
+     * Initializes the activity, sets up the shopping list view, and retrieves data from Firebase.
+     *
+     * @param savedInstanceState A bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,38 +47,36 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingListView.setOnItemClickListener((parent, view, position, id) -> {
             String itemString = shoppingList.get(position);
             String[] parts = itemString.split(" - ");
-                    if (parts.length == 2) {
-                        String itemName = parts[0];
-                        String itemQuantity = parts[1];
+            if (parts.length == 2) {
+                String itemName = parts[0];
+                String itemQuantity = parts[1];
 
-                        // Find the item ID from the Firebase database
-                        shoppingListRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    ShoppingItem item = snapshot.getValue(ShoppingItem.class);
-                                    if (item != null) {
-                                        item.setItemId(snapshot.getKey());  // Set the item ID
-                                        showEditDeleteDialog(item);
-                                    }
-                                }
+                // Find the item ID from the Firebase database
+                shoppingListRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ShoppingItem item = snapshot.getValue(ShoppingItem.class);
+                            if (item != null) {
+                                item.setItemId(snapshot.getKey());  // Set the item ID
+                                showEditDeleteDialog(item);
                             }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Log.d(DEBUG_TAG, "Error finding item: " + databaseError.getMessage());
-                            }
-                        });
+                        }
                     }
-        });
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d(DEBUG_TAG, "Error finding item: " + databaseError.getMessage());
+                    }
+                });
+            }
+        });
 
         Button goBackButton = findViewById(R.id.go_back_button);
         goBackButton.setOnClickListener(v -> {
             Intent intent = new Intent(ShoppingListActivity.this, RoommateManagementActivity.class);
             startActivity(intent);
         });
-
 
         shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");
 
@@ -97,7 +100,12 @@ public class ShoppingListActivity extends AppCompatActivity {
         });
     }
 
-    // Method to add a new item
+    /**
+     * Adds a new item to the shopping list in Firebase.
+     *
+     * @param name The name of the item to be added.
+     * @param quantity The quantity of the item to be added.
+     */
     public void addNewItem(String name, String quantity) {
         DatabaseReference newItemRef = shoppingListRef.push();
         String itemId = newItemRef.getKey();
@@ -105,6 +113,11 @@ public class ShoppingListActivity extends AppCompatActivity {
         newItemRef.setValue(newItem);
     }
 
+    /**
+     * Displays a dialog to edit or delete an item from the shopping list.
+     *
+     * @param item The item to be edited or deleted.
+     */
     private void showEditDeleteDialog(ShoppingItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit or Delete Item");
@@ -153,3 +166,4 @@ public class ShoppingListActivity extends AppCompatActivity {
         dialog.show();
     }
 }
+

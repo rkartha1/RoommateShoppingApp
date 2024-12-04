@@ -7,8 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,147 +21,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-//
-//public class ViewBasketActivity extends AppCompatActivity {
-//    private static final String DEBUG_TAG = "ViewBasketActivity";
-//    private ListView recentlyPurchasedListView;
-//    private ArrayAdapter<String> adapter;
-//    private ArrayList<String> recentlyPurchasedList;
-//    private DatabaseReference recentlyPurchasedRef;
-//    private DatabaseReference shoppingListRef;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_view_basket);
-//
-//        recentlyPurchasedListView = findViewById(R.id.recently_purchased_list_view);
-//        recentlyPurchasedList = new ArrayList<>();
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recentlyPurchasedList);
-//        recentlyPurchasedListView.setAdapter(adapter);
-//
-//        recentlyPurchasedListView.setOnItemClickListener((parent, view, position, id) -> {
-//            String itemString = recentlyPurchasedList.get(position);
-//            String[] parts = itemString.split(" - ");
-//            if (parts.length == 2) {
-//                String itemName = parts[0];
-//                String itemQuantity = parts[1];
-//
-//                // Find the item ID from the Firebase database
-//                recentlyPurchasedRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                            ShoppingItem item = snapshot.getValue(ShoppingItem.class);
-//                            if (item != null) {
-//                                item.setItemId(snapshot.getKey());  // Set the item ID
-//                                showDeleteDialog(item);
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Log.d(DEBUG_TAG, "Error finding item: " + databaseError.getMessage());
-//                    }
-//                });
-//            }
-//        });
-//
-//        Button goBackButton = findViewById(R.id.go_back_button);
-//        goBackButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewBasketActivity.this, RoommateManagementActivity.class);
-//            startActivity(intent);
-//        });
-//
-//        Button logOutButton = findViewById(R.id.log_out_button1);
-//        logOutButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewBasketActivity.this, MainActivity.class);
-//            startActivity(intent);
-//        });
-//
-//        recentlyPurchasedRef = FirebaseDatabase.getInstance().getReference("recentlyPurchased");
-//        shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");
-//
-//        recentlyPurchasedRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                recentlyPurchasedList.clear();
-//                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-//                    ShoppingItem item = itemSnapshot.getValue(ShoppingItem.class);
-//                    if (item != null) {
-//                        recentlyPurchasedList.add(item.getItemName() + " - " + item.getItemQuantity());
-//                    }
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Log.d(DEBUG_TAG, "Error reading recently purchased list: " + databaseError.getMessage());
-//            }
-//        });
-//    }
-//
-//    private void showDeleteDialog(ShoppingItem item) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Delete Item");
-//
-//        builder.setMessage("Are you sure you want to remove " + item.getItemName() + " from your basket? This will move it back to the shopping list.");
-//
-//        builder.setPositiveButton("Delete", (dialog, which) -> {
-//            moveItemBackToShoppingList(item);
-//        });
-//
-//        builder.setNegativeButton("Cancel", null);
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
-//
-//    private void moveItemBackToShoppingList(ShoppingItem item) {
-//        // Move item back to the shopping list
-//        shoppingListRef.push().setValue(item);
-//
-//        // Remove the item from the recently purchased list
-//        recentlyPurchasedRef.child(item.getItemId()).removeValue()
-//                .addOnSuccessListener(aVoid -> Log.d(DEBUG_TAG, "Item moved back to shopping list and deleted from recently purchased"))
-//                .addOnFailureListener(e -> Log.d(DEBUG_TAG, "Error moving item back to shopping list: " + e.getMessage()));
-//
-//        // Refresh the list
-//        recentlyPurchasedRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                recentlyPurchasedList.clear();
-//                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-//                    ShoppingItem item = itemSnapshot.getValue(ShoppingItem.class);
-//                    if (item != null) {
-//                        recentlyPurchasedList.add(item.getItemName() + " - " + item.getItemQuantity());
-//                    }
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Log.d(DEBUG_TAG, "Error refreshing recently purchased list: " + databaseError.getMessage());
-//            }
-//        });
-//    }
-//}
 
-
+/**
+ * Activity that displays a shopping basket where the user can view and manage purchased items.
+ */
 public class ViewBasketActivity extends AppCompatActivity {
-    private static final String DEBUG_TAG = "ViewBasketActivity";
-    private ListView recentlyPurchasedListView;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> recentlyPurchasedList;
-    private DatabaseReference recentlyPurchasedRef;
-    private DatabaseReference shoppingListRef;
-    private DatabaseReference purchasedItemsRef;
-    private EditText totalPriceEditText;
-    private Button submitButton;
 
+    private static final String DEBUG_TAG = "ViewBasketActivity"; // Debugging tag for logging
+    private ListView recentlyPurchasedListView; // ListView for displaying purchased items
+    private ArrayAdapter<String> adapter; // Adapter for the ListView
+    private ArrayList<String> recentlyPurchasedList; // List of recently purchased items
+    private DatabaseReference recentlyPurchasedRef; // Firebase reference for recently purchased items
+    private DatabaseReference shoppingListRef; // Firebase reference for shopping list
+    private DatabaseReference purchasedItemsRef; // Firebase reference for purchased items
+    private EditText totalPriceEditText; // EditText for the total price
+    private Button submitButton; // Button to submit the purchase
+
+    /**
+     * Initializes the activity, sets up the UI components, and loads the recently purchased items.
+     *
+     * @param savedInstanceState Bundle containing saved instance state (if any).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,6 +56,7 @@ public class ViewBasketActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recentlyPurchasedList);
         recentlyPurchasedListView.setAdapter(adapter);
 
+        // Set up item click listener to handle item deletion
         recentlyPurchasedListView.setOnItemClickListener((parent, view, position, id) -> {
             String itemString = recentlyPurchasedList.get(position);
             String[] parts = itemString.split(" - ");
@@ -185,7 +64,7 @@ public class ViewBasketActivity extends AppCompatActivity {
                 String itemName = parts[0];
                 String itemQuantity = parts[1];
 
-                // Find the item ID from the Firebase database
+                // Find the item ID from Firebase and show the delete dialog
                 recentlyPurchasedRef.orderByChild("itemName").equalTo(itemName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -248,9 +127,13 @@ public class ViewBasketActivity extends AppCompatActivity {
             Intent intent = new Intent(ViewBasketActivity.this, RoommateManagementActivity.class);
             startActivity(intent);
         });
-
     }
 
+    /**
+     * Displays a dialog confirming whether the user wants to delete an item from the basket.
+     *
+     * @param item The ShoppingItem object to be deleted.
+     */
     private void showDeleteDialog(ShoppingItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Item");
@@ -267,8 +150,12 @@ public class ViewBasketActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Moves an item from the recently purchased list back to the shopping list in Firebase.
+     *
+     * @param item The ShoppingItem to be moved back.
+     */
     private void moveItemBackToShoppingList(ShoppingItem item) {
-        // Move item back to the shopping list
         shoppingListRef.push().setValue(item);
 
         // Remove the item from the recently purchased list
@@ -297,6 +184,11 @@ public class ViewBasketActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Submits the purchase and records it in Firebase.
+     *
+     * @param totalPrice The total price of the purchase.
+     */
     private void submitPurchase(double totalPrice) {
         // Get the current signed-in user's email
         String roommateEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -339,8 +231,7 @@ public class ViewBasketActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }
+
 
 

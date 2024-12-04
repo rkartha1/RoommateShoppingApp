@@ -24,6 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity that allows users to mark items in the shopping list as purchased.
+ */
 public class MarkAsPurchasedActivity extends AppCompatActivity {
 
     private ListView shoppingListView;
@@ -32,6 +35,11 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
     private Button markPurchasedButton;
     private CustomAdapter adapter;
 
+    /**
+     * Initializes the activity, sets up the UI components, and fetches the shopping list from Firebase.
+     *
+     * @param savedInstanceState the state of the activity before it was destroyed (used for restoring state)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +63,9 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         markPurchasedButton.setOnClickListener(view -> markItemsAsPurchased());
     }
 
+    /**
+     * Fetches the shopping list from Firebase and sets up the ListView with the retrieved items.
+     */
     private void fetchShoppingListFromFirebase() {
         // Get the shopping list from Firebase
         DatabaseReference shoppingListRef = FirebaseDatabase.getInstance().getReference("shoppingList");
@@ -81,14 +92,25 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sets up the ListView with a custom adapter to display shopping items with checkboxes.
+     */
     private void setupListView() {
         adapter = new CustomAdapter(shoppingList);
         shoppingListView.setAdapter(adapter);
     }
 
+    /**
+     * Custom adapter that binds shopping items to the ListView with checkboxes.
+     */
     private class CustomAdapter extends BaseAdapter {
         private List<ShoppingItem> items;
 
+        /**
+         * Constructs a new CustomAdapter with the specified list of shopping items.
+         *
+         * @param items the list of shopping items to display
+         */
         public CustomAdapter(List<ShoppingItem> items) {
             this.items = items;
         }
@@ -108,6 +130,15 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
             return position;
         }
 
+        /**
+         * Returns the view for a single shopping item in the ListView.
+         * Binds the item name and quantity to a TextView, and manages the checkbox state.
+         *
+         * @param position the position of the item in the list
+         * @param convertView the recycled view (if available)
+         * @param parent the parent ViewGroup
+         * @return the view displaying the shopping item
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
@@ -135,6 +166,10 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Marks the selected items as purchased and moves them to the "recently purchased" list in Firebase.
+     * The selected items are removed from the shopping list in Firebase.
+     */
     private void markItemsAsPurchased() {
         if (selectedItems.isEmpty()) {
             Toast.makeText(this, "Please select items", Toast.LENGTH_SHORT).show();
@@ -169,3 +204,4 @@ public class MarkAsPurchasedActivity extends AppCompatActivity {
         fetchShoppingListFromFirebase(); // Reload the shopping list
     }
 }
+

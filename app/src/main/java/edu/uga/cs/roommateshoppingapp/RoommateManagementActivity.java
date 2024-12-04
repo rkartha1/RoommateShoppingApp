@@ -13,12 +13,21 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Activity for managing various roommate shopping tasks.
+ */
 public class RoommateManagementActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "ManagementActivity";
 
     private TextView signedInTextView;
 
+    /**
+     * Initializes the RoommateManagementActivity by setting up the UI elements, including buttons
+     * for managing shopping tasks and the logout functionality.
+     *
+     * @param savedInstanceState The saved instance state, if any, to restore the previous state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +80,9 @@ public class RoommateManagementActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Listener for the "New Lead" button. Starts the NewItemActivity to add a new shopping item.
+     */
     private class NewLeadButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -79,6 +91,9 @@ public class RoommateManagementActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener for the "Purchased Items" button. Starts the PurchasedItemListActivity to view the purchased items.
+     */
     private class PurchasedItemButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -87,6 +102,9 @@ public class RoommateManagementActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener for the "Review Leads" button. Starts the ShoppingListActivity to review shopping leads.
+     */
     private class ReviewLeadsButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -95,6 +113,9 @@ public class RoommateManagementActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener for the "Mark as Purchased" button. Starts the MarkAsPurchasedActivity to mark items as purchased.
+     */
     private class MarkAsPurchasedButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -103,39 +124,58 @@ public class RoommateManagementActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the activity is starting. Logs the activity's start event.
+     */
     @Override
     protected void onStart() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onStart()");
         super.onStart();
     }
 
+    /**
+     * Called when the activity has become visible to the user. Logs the activity's resume event.
+     */
     @Override
     protected void onResume() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onResume()");
         super.onResume();
     }
 
+    /**
+     * Called when the system is about to start resuming a previous activity. Logs the activity's pause event.
+     */
     @Override
     protected void onPause() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onPause()");
         super.onPause();
     }
 
+    /**
+     * Called when the activity is no longer visible to the user. Logs the activity's stop event.
+     */
     @Override
     protected void onStop() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onStop()");
         super.onStop();
     }
 
+    /**
+     * Called when the activity is being destroyed. Logs the activity's destroy event.
+     */
     @Override
     protected void onDestroy() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onDestroy()");
         super.onDestroy();
     }
 
+    /**
+     * Called when the activity is being restarted. Logs the activity's restart event.
+     */
     @Override
     protected void onRestart() {
         Log.d(DEBUG_TAG, "RoommateShopping: ManagementActivity.onRestart()");
         super.onRestart();
     }
 }
+
